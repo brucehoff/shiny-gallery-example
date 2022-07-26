@@ -1,5 +1,7 @@
 FROM rocker/shiny
 
+RUN apt-get update && apt-get install -y libxml2-dev
+
 RUN mkdir -p /srv/shiny-server/nyc-metro-vis
 COPY *.R /srv/shiny-server/nyc-metro-vis
 COPY *.gif /srv/shiny-server/nyc-metro-vis
