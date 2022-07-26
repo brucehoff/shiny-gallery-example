@@ -6,6 +6,7 @@ RUN mkdir -p /srv/shiny-server/nyc-metro-vis
 COPY *.R /srv/shiny-server/nyc-metro-vis
 COPY *.gif /srv/shiny-server/nyc-metro-vis
 COPY data /srv/shiny-server/nyc-metro-vis/data
+COPY clock-cache /srv/shiny-server/nyc-metro-vis/clock-cache
 
 
 
