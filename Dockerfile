@@ -2,11 +2,11 @@ FROM rocker/shiny
 
 RUN apt-get update && apt-get install -y libxml2-dev
 
-RUN mkdir -p /srv/shiny-server/nyc-metro-vis
-COPY *.R /srv/shiny-server/nyc-metro-vis
-COPY *.gif /srv/shiny-server/nyc-metro-vis
-COPY data /srv/shiny-server/nyc-metro-vis/data
-COPY clock-cache /srv/shiny-server/nyc-metro-vis/clock-cache
+RUN mkdir -p /srv/shiny-server/gallery-example
+COPY *.R /srv/shiny-server/gallery-example
+COPY *.gif /srv/shiny-server/gallery-example
+COPY data /srv/shiny-server/gallery-example/data
+COPY clock-cache /srv/shiny-server/gallery-example/clock-cache
 
 
 
