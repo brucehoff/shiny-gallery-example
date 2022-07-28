@@ -74,7 +74,7 @@ class DockerFargateStack(Stack):
 
     	vpc = ec2.Vpc(self, get_vpc_name(), max_azs=2)
 
-    	cluster = ecs.Cluster(self, get_cluster_name(), vpc=vpc)
+    	cluster = ecs.Cluster(self, get_cluster_name(), vpc=vpc, container_insights=True)
         
     	secrets = {
     	# uncomment the following to add a secret as an environment variable
@@ -96,12 +96,28 @@ class DockerFargateStack(Stack):
 		# for options to pass to ApplicationLoadBalancedTaskImageOptions see:
 		# https://docs.aws.amazon.com/cdk/api/v1/python/aws_cdk.aws_ecs_patterns/ApplicationLoadBalancedTaskImageOptions.html#aws_cdk.aws_ecs_patterns.ApplicationLoadBalancedTaskImageOptions
 		#
-    	albfs = ecs_patterns.ApplicationLoadBalancedFargateService(self, get_service_name(),
+    	load_balanced_fargate_service = ecs_patterns.ApplicationLoadBalancedFargateService(self, get_service_name(),
             cluster=cluster,            # Required
             cpu=256,                    # Default is 256
-            desired_count=1,            # Default is 1
+            desired_count=1,            # Number of copies of the 'task' (i.e. the app') running behind the ALB
             task_image_options=task_image_options,
             memory_limit_mib=1024,      # Default is 512
-            public_load_balancer=True)  # Default is False
+            public_load_balancer=True,  # Default is False
+            redirect_http=True)
+            
+    	scalable_target = load_balanced_fargate_service.service.auto_scale_task_count(
+            min_capacity=1, # Minimum capacity to scale to. Default: 1
+            max_capacity=4 # Maximum capacity to scale to.
+    	)
 
-    	Tags.of(albfs).add(COST_CENTER_TAG_NAME, get_cost_center())
+		# Add more capacity when CPU utilization reaches 50%
+    	scalable_target.scale_on_cpu_utilization("CpuScaling",
+            target_utilization_percent=50
+    	)
+
+		# Add more capacity when memory utilization reaches 50%
+    	scalable_target.scale_on_memory_utilization("MemoryScaling",
+            target_utilization_percent=50
+    	)
+
+    	Tags.of(load_balanced_fargate_service).add(COST_CENTER_TAG_NAME, get_cost_center())
