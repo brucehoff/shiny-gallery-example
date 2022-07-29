@@ -102,8 +102,8 @@ class DockerFargateStack(Stack):
             desired_count=1,            # Number of copies of the 'task' (i.e. the app') running behind the ALB
             task_image_options=task_image_options,
             memory_limit_mib=1024,      # Default is 512
-            public_load_balancer=True,  # Default is False
-            redirect_http=True)
+            public_load_balancer=True)  # Default is False
+            #redirect_http=True) #TODO adding this causes the error, "The HTTPS protocol must be used when redirecting HTTP traffic"
             
     	scalable_target = load_balanced_fargate_service.service.auto_scale_task_count(
             min_capacity=1, # Minimum capacity to scale to. Default: 1
