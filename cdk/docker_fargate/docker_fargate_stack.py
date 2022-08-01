@@ -119,5 +119,8 @@ class DockerFargateStack(Stack):
     	scalable_target.scale_on_memory_utilization("MemoryScaling",
             target_utilization_percent=50
     	)
+    	
+    	# Other metrics to drive scaling are discussed here:
+    	# https://docs.aws.amazon.com/cdk/api/v1/python/aws_cdk.aws_autoscaling/README.html
 
     	Tags.of(load_balanced_fargate_service).add(COST_CENTER_TAG_NAME, get_cost_center())
