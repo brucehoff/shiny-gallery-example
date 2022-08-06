@@ -105,22 +105,23 @@ class DockerFargateStack(Stack):
             public_load_balancer=True)  # Default is False
             #redirect_http=True) #TODO adding this causes the error, "The HTTPS protocol must be used when redirecting HTTP traffic"
             
-    	scalable_target = load_balanced_fargate_service.service.auto_scale_task_count(
-            min_capacity=1, # Minimum capacity to scale to. Default: 1
-            max_capacity=4 # Maximum capacity to scale to.
-    	)
+        if False: # enable/disable autoscaling
+    		scalable_target = load_balanced_fargate_service.service.auto_scale_task_count(
+            	min_capacity=1, # Minimum capacity to scale to. Default: 1
+            	max_capacity=4 # Maximum capacity to scale to.
+    		)
 
-		# Add more capacity when CPU utilization reaches 50%
-    	scalable_target.scale_on_cpu_utilization("CpuScaling",
-            target_utilization_percent=50
-    	)
+			# Add more capacity when CPU utilization reaches 50%
+    		scalable_target.scale_on_cpu_utilization("CpuScaling",
+            	target_utilization_percent=50
+    		)
 
-		# Add more capacity when memory utilization reaches 50%
-    	scalable_target.scale_on_memory_utilization("MemoryScaling",
-            target_utilization_percent=50
-    	)
+			# Add more capacity when memory utilization reaches 50%
+    		scalable_target.scale_on_memory_utilization("MemoryScaling",
+            	target_utilization_percent=50
+    		)
     	
-    	# Other metrics to drive scaling are discussed here:
-    	# https://docs.aws.amazon.com/cdk/api/v1/python/aws_cdk.aws_autoscaling/README.html
+    		# Other metrics to drive scaling are discussed here:
+    		# https://docs.aws.amazon.com/cdk/api/v1/python/aws_cdk.aws_autoscaling/README.html
 
     	Tags.of(load_balanced_fargate_service).add(COST_CENTER_TAG_NAME, get_cost_center())
